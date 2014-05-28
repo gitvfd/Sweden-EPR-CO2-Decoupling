@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<title>Production based CO2 emissions vs GDP</title>
+  	<script src="http://d3js.org/d3.v3.min.js"></script>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  	<style>
+
+    body { color: #555; background: #fff;width: 500px; font: normal 13px "HelveticaNeueLT", Helvetica, Arial, sans-serif; margin: 2em; }
+    header { margin: 0 0 20px 20px; border-bottom: 1px solid #6c6c6c; width: 400px; position: relative; }
+    h1 { font-size: 14px; font-weight: bold; text-shadow: #fff 0 1px 0; margin: 0 0 0 0; padding: 0; }
+    h2 { font-size: 12px; font-weight: normal; font-style: italic; text-shadow: #fff 0 1px 0; margin: 0 0 0 0; padding: 0; }
+    small { margin: 0 0 10px 130px; color: #555; font-size: 13px; font-style: italic; top: 0.6em; position: top;}
+    a { color: #fff; }
+
+    .row {
+
+      width: 400px;
+      margin-left: -20px;
+      *zoom: 1;
+    }
+    .row:before, .row:after {
+      display: table;
+      content: "";
+    }
+    .row:after {
+      clear: both;
+    }
+  	#tooltip {
+      position: absolute;
+      width: auto;
+      height: auto;
+      padding: 10px;
+      background-color: white;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      opacity: 0.90;
+    	filter:alpha(opacity=90);
+    	-moz-opacity:0.90;
+    }
+
+  	#tooltip.hidden {
+      display: none;
+    }
+
+  	#tooltip p {
+      margin: 0;
+      font-family: sans-serif;
+      font-size: 12px;
+      line-height: 13px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+      fill: grey;
+    }
+
+    .source {
+      font-family: sans-serif;
+      font-size: 11px;
+      fill: grey;
+    }
+  </style>
+</head>
+<body>
+  <div id="tooltip" class="hidden">
+      <p><strong><span id="countryTooltip">All</span>:</strong> </p>
+      <p>Change in GDP: <span id="changeGDP">XX</span></p>
+      <p>Change in CO<sub>2</sub>: <span id="changeCO2">XX</span></p>
+      <p><i><span id="defZone">Definition</span></i></p>
+  </div>
+    <header>
+        <center>
+        <h1>
+          Decoupling CO<sub>2</sub> emissions from economic growth
+        </h1>
+        </center>
+    </header>
+  </div>
+  <br>
+  <div class="row">
+    <div class="span1" id="chart"></div>
+  </div>
+  <div><b>* </b>: <b>Vertical axis</b>: Production-based CO₂ emission from fuel combustion. <br> &nbsp; &nbsp;<b>Horizontal axis</b>: Change in GDP. From January 1999 to November 2009.</div>
+  <div class="source"><b>Source: </b>OECD (2013), <i>OECD Economic Outlook N°93</i>; OECD-IEA (2013),<br> <i>CO₂ emission from Fuel Combustion</i> (database)</div>
+  <script>
+    var margin = 50,
+        width = 550,
+        height = 500;
+
+    chart = d3.select("#chart").append("svg")
+               .attr("width", width)
+               .attr("height", height);
+
+
+    d3.tsv("data.tsv", function(tsv) {
+      data = tsv;
+      console.log(d3.min(data, function(d) { return parseFloat(d.changeCO2); }));
+      //Create scale functions
+      var xScale = d3.scale.linear()
+                 .domain([0, d3.max(data, function(d) { return parseFloat(d.changeGDP); })])
+                 .range([margin, width - margin * 2]);
+
+      var yScale = d3.scale.linear()
+                 .domain([d3.min(data, function(d) { return parseFloat(d.changeCO2); }), d3.max(data, function(d) { return parseFloat(d.changeCO2); })])
+                 .range([height - margin, margin]);
+      //Define X axis
+      var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom")
+                .ticks(5)
+                .tickFormat(d3.format("0%"));
+
+      //Define Y axis
+      var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left")
+                .ticks(5)
+                .tickFormat(d3.format("0%"));
+      
+      //Create X axis
+      chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + yScale(0) + ")")
+        .call(xAxis);
+      
+      //Create Y axis
+      chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + margin + ",0)")
+        .call(yAxis);
+
+      chart.append("text")
+        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-30)
+        .attr("y",yScale(0)+25)
+        .text("Economic growth*");
+
+      chart.append("text")
+        .attr("x",xScale(0)-35)
+        .attr("y",yScale(d3.max(data, function(d) { return parseFloat(d.changeCO2)}))-10)
+        .text("CO₂ emissions change*");
+      
+
+      //Create circles
+      chart.selectAll("circle")
+         .data(data)
+         .enter()
+         .append("circle")
+         .attr("cx", function(d) {
+            return xScale(parseFloat(d.changeGDP));
+         })
+         .attr("cy", function(d) {
+            return yScale(parseFloat(d.changeCO2));
+         })
+         .attr("r", function(d) {
+            return 4;
+         })
+         .attr("fill",function(d){
+          if (d.Country=="Sweden")
+            return "rgb(228,108,10)";
+          else if (d.Country=="OECD")
+            return "rgb(74,117,187)";
+          else if(d.changeCO2>0)
+            return "rgb(209,218,251)";
+          else if (d.changeCO2<=0)
+            return "rgb(102,189,58)";
+         });
+
+      /*
+      //Create labels
+      svg.selectAll("text")
+         .data(dataset)
+         .enter()
+         .append("text")
+         .text(function(d) {
+            return d[0] + "," + d[1];
+         })
+         .attr("x", function(d) {
+            return xScale(d[0]);
+         })
+         .attr("y", function(d) {
+            return yScale(d[1]);
+         })
+         .attr("font-family", "sans-serif")
+         .attr("font-size", "11px")
+         .attr("fill", "rgb(228,108,10)");
+        */
+
+
+      chart.selectAll("circle")
+        .on("mouseover",function(d){
+          d3.select(this).attr("r",8);
+
+          d3.select(this).attr("fill",function(){
+            if(d.changeCO2>d.changeGDP)
+              return "grey";
+            else if (d.Country=="Sweden")
+              return "rgb(228,108,10)";
+            else if (d.Country=="OECD")
+              return "rgb(74,117,187)";
+            else if(d.changeCO2>0)
+              return "rgb(209,218,251)";
+            else if (d.changeCO2<=0)
+              return "rgb(102,189,58)";
+          });
+
+          var xPosition = parseFloat(d3.select(this).attr("cx")) + document.getElementById("chart").offsetLeft +10 ;
+          var yPosition = parseFloat(d3.select(this).attr("cy")) +document.getElementById("chart").offsetTop -10;
+
+          d3.select("#tooltip")
+                      .style("left",xPosition+"px")
+                      .style("top", yPosition+"px") 
+                      .select("#countryTooltip")
+                      .text(function(){
+                          return d.Country;
+                      });
+          d3.select("#tooltip")
+                      .select("#changeGDP")
+                      .text(function(){
+                          return d3.format(".1%")(parseFloat(d.changeGDP)) ;
+                      });
+          d3.select("#tooltip")
+                      .select("#changeCO2")
+                      .text(function(){
+                          return d3.format(".1%")(parseFloat(d.changeCO2)) ;
+                      });
+
+          d3.select("#tooltip") 
+                      .select("#defZone")
+                      .text(function(){
+                          if(d.changeCO2>d.changeGDP)
+                            return "No decoupling: In this area, as the economy grows, so do CO₂ emissions";
+                          else if (d.changeCO2<=0)
+                            return "Decoupling: the economy grows while managing to reduce emissions";
+                          else
+                            return "Relative decoupling: CO₂ emissions do not increase as fast as the economy grows";;
+                      });
+
+          d3.select("#tooltip").classed("hidden", false);
+
+        })
+        .on("mouseout",function(d){
+          d3.select(this).attr("r",4);
+
+          d3.select(this).attr("fill",function(){
+            if (d.Country=="Sweden")
+              return "rgb(228,108,10)";
+            else if (d.Country=="OECD")
+              return "rgb(74,117,187)";
+            else if(d.changeCO2>0)
+              return "rgb(209,218,251)";
+            else if (d.changeCO2<=0)
+              return "rgb(102,189,58)";
+          });
+          
+          d3.select("#tooltip").classed("hidden", true);
+        });
+
+    });
+
+  </script>
+</body>
