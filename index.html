@@ -107,7 +107,6 @@
 
     d3.tsv("data.tsv", function(tsv) {
       data = tsv;
-      console.log(d3.min(data, function(d) { return parseFloat(d.changeCO2); }));
       //Create scale functions
       var xScale = d3.scale.linear()
                  .domain([0, d3.max(data, function(d) { return parseFloat(d.changeGDP); })])
