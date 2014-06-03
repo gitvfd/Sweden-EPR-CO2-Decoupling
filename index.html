@@ -97,7 +97,7 @@
     <div class="span1" id="chart"></div>
   </div>
   <!--<div><b>* </b>: <b>Vertical axis</b>: Production-based CO₂ emission from fuel combustion. <br> &nbsp; &nbsp;<b>Horizontal axis</b>: Change in GDP. From January 1999 to November 2009.</div>-->
-  <div class="source"><b>Source: </b>IEA (2013), <i>IEA CO2 Emissions from Fuel Combustion</i> (database);<br> OECD (2013), <i>OECD Economic 
+  <div class="source"><b>Source: </b>IEA (2013), <i>IEA CO2 Emissions from Fuel Combustion</i> (database);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OECD (2013), <i>OECD Economic 
 Outlook No. 93</i> (database)</div>
   <script>
     var margin = 50,
@@ -146,7 +146,7 @@ Outlook No. 93</i> (database)</div>
         .call(yAxis);
 
       chart.append("text")
-        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-90)
+        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-100)
         .attr("y",yScale(0)+30)
         .text("Economic growth (change in GDP)");
 
