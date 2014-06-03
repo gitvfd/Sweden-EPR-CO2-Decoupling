@@ -143,9 +143,9 @@ Outlook No. 93</i> (database)</div>
         .call(yAxis);
 
       chart.append("text")
-        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-30)
-        .attr("y",yScale(0)+25)
-        .text("Economic growth"+\r\n+" (change in GDP)");
+        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-80)
+        .attr("y",yScale(0)+30)
+        .text("Economic growth (change in GDP)");
 
       chart.append("text")
         .attr("x",xScale(0)-35)
