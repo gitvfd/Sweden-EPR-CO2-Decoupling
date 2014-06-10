@@ -86,6 +86,9 @@
         <h1>
           Decoupling CO<sub>2</sub> emissions from economic growth
         </h1>
+         <h2>
+          in 1999-2011
+        </h2>
         </center>
     </header>
   </div>
@@ -93,8 +96,9 @@
   <div class="row">
     <div class="span1" id="chart"></div>
   </div>
-  <div><b>* </b>: <b>Vertical axis</b>: Production-based CO₂ emission from fuel combustion. <br> &nbsp; &nbsp;<b>Horizontal axis</b>: Change in GDP. From January 1999 to November 2009.</div>
-  <div class="source"><b>Source: </b>OECD (2013), <i>OECD Economic Outlook N°93</i>; OECD-IEA (2013),<br> <i>CO₂ emission from Fuel Combustion</i> (database)</div>
+  <!--<div><b>* </b>: <b>Vertical axis</b>: Production-based CO₂ emission from fuel combustion. <br> &nbsp; &nbsp;<b>Horizontal axis</b>: Change in GDP. From January 1999 to November 2009.</div>-->
+  <div class="source"><b>Source: </b>IEA (2013), <i>IEA CO2 Emissions from Fuel Combustion</i> (database);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OECD (2013), <i>OECD Economic 
+Outlook No. 93</i> (database)</div>
   <script>
     var margin = 50,
         width = 550,
@@ -107,7 +111,6 @@
 
     d3.tsv("data.tsv", function(tsv) {
       data = tsv;
-      
       //Create scale functions
       var xScale = d3.scale.linear()
                  .domain([0, d3.max(data, function(d) { return parseFloat(d.changeGDP); })])
@@ -143,14 +146,14 @@
         .call(yAxis);
 
       chart.append("text")
-        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-30)
-        .attr("y",yScale(0)+25)
-        .text("Economic growth*");
+        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-100)
+        .attr("y",yScale(0)+30)
+        .text("Economic growth (change in GDP)");
 
       chart.append("text")
         .attr("x",xScale(0)-35)
         .attr("y",yScale(d3.max(data, function(d) { return parseFloat(d.changeCO2)}))-10)
-        .text("CO₂ emissions change*");
+        .text("Change in CO₂ emissions from fuel combustion");
       
 
       //Create circles
