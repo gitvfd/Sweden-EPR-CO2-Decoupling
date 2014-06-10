@@ -155,10 +155,7 @@ Outlook No. 93</i> (database)</div>
         .attr("x",xScale(0)-35)
         .attr("y",yScale(d3.max(data, function(d) { return parseFloat(d.changeCO2)}))-10)
         .text("Change in CO₂ emissions from fuel combustion");
-<<<<<<< HEAD
 
-=======
->>>>>>> FETCH_HEAD
       
 
       //Create circles
@@ -187,27 +184,32 @@ Outlook No. 93</i> (database)</div>
          });
 
       //Create labels
-      /*chart.selectAll("text")
+
+      chart.selectAll("text")
          .data(data)
          .enter()
          .append("text")
          .text(function(d) {
-            return d.ISO;
+            if(!(d.ISO=="NOR") && !(d.ISO=="FIN") && !(d.ISO=="CHE")&& !(d.ISO=="ESP")&& !(d.ISO=="FRA")&& !(d.ISO=="GRC")&& !(d.ISO=="CAN")&& !(d.ISO=="BEL")&& !(d.ISO=="DEU")&& !(d.ISO=="NZL")&& !(d.ISO=="OECD")&& !(d.ISO=="JPN")){
+              return d.ISO;
+            }
+
          })
          .attr("x", function(d) {
             if(d.changeCO2>=0)
             return xScale(parseFloat(d.changeGDP)) + 8;
             else
-            return xScale(parseFloat(d.changeGDP)) + 8;
+            return xScale(parseFloat(d.changeGDP)) +8;
          })
          .attr("y", function(d) {
             if(d.changeCO2>=0)
-            return yScale(parseFloat(d.changeCO2))- 0;
+            return yScale(parseFloat(d.changeCO2))+ 0;
           else
-            return yScale(parseFloat(d.changeCO2))+ 10;
+            return yScale(parseFloat(d.changeCO2))+ 5;
          })
          .attr("font-family", "sans-serif")
-         .attr("font-size", "10px");*/
+         .attr("font-size", "10px");
+ 
 
       
       //Create X axis
