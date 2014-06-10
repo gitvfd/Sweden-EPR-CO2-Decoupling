@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  	<title>Production based CO2 emissions vs GDP</title>
-  	<script src="http://d3js.org/d3.v3.min.js"></script>
-  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  	<style>
+    <title>Production based CO2 emissions vs GDP</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
 
     body { color: #555; background: #fff;width: 500px; font: normal 13px "HelveticaNeueLT", Helvetica, Arial, sans-serif; margin: 2em; }
     header { margin: 0 0 20px 20px; border-bottom: 1px solid #6c6c6c; width: 400px; position: relative; }
@@ -26,7 +26,7 @@
     .row:after {
       clear: both;
     }
-  	#tooltip {
+    #tooltip {
       position: absolute;
       width: auto;
       height: auto;
@@ -40,15 +40,15 @@
       box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
       pointer-events: none;
       opacity: 0.90;
-    	filter:alpha(opacity=90);
-    	-moz-opacity:0.90;
+      filter:alpha(opacity=90);
+      -moz-opacity:0.90;
     }
 
-  	#tooltip.hidden {
+    #tooltip.hidden {
       display: none;
     }
 
-  	#tooltip p {
+    #tooltip p {
       margin: 0;
       font-family: sans-serif;
       font-size: 12px;
@@ -132,6 +132,7 @@ Outlook No. 93</i> (database)</div>
                 .orient("left")
                 .ticks(5)
                 .tickFormat(d3.format("0%"));
+
       
       //Create X axis
       chart.append("g")
@@ -154,6 +155,10 @@ Outlook No. 93</i> (database)</div>
         .attr("x",xScale(0)-35)
         .attr("y",yScale(d3.max(data, function(d) { return parseFloat(d.changeCO2)}))-10)
         .text("Change in CO₂ emissions from fuel combustion");
+<<<<<<< HEAD
+
+=======
+>>>>>>> FETCH_HEAD
       
 
       //Create circles
@@ -172,35 +177,60 @@ Outlook No. 93</i> (database)</div>
          })
          .attr("fill",function(d){
           if (d.Country=="Sweden")
-            return "rgb(228,108,10)";
+            return "#fb1600";
           else if (d.Country=="OECD")
             return "rgb(74,117,187)";
           else if(d.changeCO2>0)
-            return "rgb(209,218,251)";
+            return "rgb(126,126,126)";
           else if (d.changeCO2<=0)
             return "rgb(102,189,58)";
          });
 
-      /*
       //Create labels
-      svg.selectAll("text")
-         .data(dataset)
+      /*chart.selectAll("text")
+         .data(data)
          .enter()
          .append("text")
          .text(function(d) {
-            return d[0] + "," + d[1];
+            return d.ISO;
          })
          .attr("x", function(d) {
-            return xScale(d[0]);
+            if(d.changeCO2>=0)
+            return xScale(parseFloat(d.changeGDP)) + 8;
+            else
+            return xScale(parseFloat(d.changeGDP)) + 8;
          })
          .attr("y", function(d) {
-            return yScale(d[1]);
+            if(d.changeCO2>=0)
+            return yScale(parseFloat(d.changeCO2))- 0;
+          else
+            return yScale(parseFloat(d.changeCO2))+ 10;
          })
          .attr("font-family", "sans-serif")
-         .attr("font-size", "11px")
-         .attr("fill", "rgb(228,108,10)");
-        */
+         .attr("font-size", "10px");*/
 
+      
+      //Create X axis
+      chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + yScale(0) + ")")
+        .call(xAxis);
+      
+      //Create Y axis
+      chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + margin + ",0)")
+        .call(yAxis);
+
+      chart.append("text")
+        .attr("x",xScale(d3.max(data, function(d) { return parseFloat(d.changeGDP)}))-100)
+        .attr("y",yScale(0)+30)
+        .text("Economic growth (change in GDP)");
+
+      chart.append("text")
+        .attr("x",xScale(0)-35)
+        .attr("y",yScale(d3.max(data, function(d) { return parseFloat(d.changeCO2)}))-10)
+        .text("Change in CO₂ emissions from fuel combustion");
 
       chart.selectAll("circle")
         .on("mouseover",function(d){
@@ -210,11 +240,11 @@ Outlook No. 93</i> (database)</div>
             if(d.changeCO2>d.changeGDP)
               return "grey";
             else if (d.Country=="Sweden")
-              return "rgb(228,108,10)";
+              return "#fb1600";
             else if (d.Country=="OECD")
               return "rgb(74,117,187)";
             else if(d.changeCO2>0)
-              return "rgb(209,218,251)";
+              return "rgb(126,126,126)";
             else if (d.changeCO2<=0)
               return "rgb(102,189,58)";
           });
@@ -259,11 +289,11 @@ Outlook No. 93</i> (database)</div>
 
           d3.select(this).attr("fill",function(){
             if (d.Country=="Sweden")
-              return "rgb(228,108,10)";
+              return "#fb1600";
             else if (d.Country=="OECD")
               return "rgb(74,117,187)";
             else if(d.changeCO2>0)
-              return "rgb(209,218,251)";
+              return "rgb(126,126,126)";
             else if (d.changeCO2<=0)
               return "rgb(102,189,58)";
           });
